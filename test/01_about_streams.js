@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import {Subject, of, from} from 'rxjs';
+import {Subject, of, from, tap} from 'rxjs';
 import {Range} from '../util/range.js';
 
 // QUnit.module('Observable Streams');
@@ -48,7 +48,7 @@ test('event streams have multiple results', function () {
   events.next(10);
   events.next(7);
 
- assert.equal(__, eventStreamResult);
+  assert.equal(__, eventStreamResult);
 });
 
 // What does of() map to for a Subject?
@@ -56,7 +56,7 @@ test('simple return', function () {
   let received = '';
   of('foo').subscribe(function (x) { received = x; });
 
- assert.equal(__, received);
+  assert.equal(__, received);
 });
 
 test('the last event', function () {
@@ -64,7 +64,7 @@ test('the last event', function () {
   const names = ['foo', 'bar'];
   from(names).subscribe(function (x) { received = x; });
 
- assert.equal(__, received);
+  assert.equal(__, received);
 });
 
 test('everything counts', function () {
@@ -72,7 +72,7 @@ test('everything counts', function () {
   const numbers = [3, 4];
   from(numbers).subscribe(function (x) { received += x; });
 
- assert.equal(__, received);
+  assert.equal(__, received);
 });
 
 test('this is still an event stream', function () {
@@ -83,7 +83,7 @@ test('this is still an event stream', function () {
   numbers.next(10);
   numbers.next(5);
 
- assert.equal(__, received);
+  assert.equal(__, received);
 });
 
 test('all events will be received', function () {
@@ -92,33 +92,34 @@ test('all events will be received', function () {
 
   from(numbers).subscribe(function (x) { received += x; });
 
- assert.equal(__, received);
+  assert.equal(__, received);
 });
 
 test('do things in the middle', function () {
-  var status = [];
-  var daysTilTest = from(Range.create(4, 1));
+  const status = [];
+  const daysTilTest = from(Range.create(4, 1));
+  daysTilTest.pipe(
+    tap(function (d) { status.push(`${d}=${d === 1 ? 'Study Like Mad' : '__'}`); })
+  ).subscribe();
 
-  daysTilTest.tap(function (d) { status.push(d + '=' + (d === 1 ? 'Study Like Mad' : __)); }).subscribe();
-
- assert.equal('4=Party,3=Party,2=Party,1=Study Like Mad', status.toString());
+  assert.equal('4=Party,3=Party,2=Party,1=Study Like Mad', status.toString());
 });
 
 test('nothing listens until you subscribe', function () {
-  var sum = 0,
-      numbers = from(Range.create(1, 10)),
-      observable = numbers.tap(function (n) { sum += n; });
+  let sum = 0;
+  const numbers = from(Range.create(1, 10));
+  const observable = numbers.pipe(tap(function (n) { sum += n; }));
 
- assert.equal(0, sum);
+  assert.equal(0, sum);
   observable.__();
 
- assert.equal(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10, sum);
+  assert.equal(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10, sum);
 });
 
 test('events before you subscribe do not count', function () {
-  var sum = 0,
-      numbers = new Subject(),
-      observable = numbers.tap(function (n) { sum += n; });
+  let sum = 0;
+  const numbers = new Subject();
+  const observable = numbers.pipe(tap(function (n) { sum += n; }));
 
   numbers.next(1);
   numbers.next(2);
@@ -128,43 +129,43 @@ test('events before you subscribe do not count', function () {
   numbers.next(3);
   numbers.next(4);
 
- assert.equal(__, sum);
+  assert.equal(__, sum);
 });
 
 test('events after you unsubscribe dont count', function () {
-  var sum = 0,
-      numbers = new Subject(),
-      observable = numbers.tap(function (n) { sum += n; }),
-      subscription = observable.subscribe();
+  let sum = 0;
+  const numbers = new Subject();
+  const observable = numbers.pipe(tap(function (n) { sum += n; }));
+  const subscription = observable.subscribe();
 
   numbers.next(1);
   numbers.next(2);
 
-  subscription.dispose();
+  subscription.unsubscribe();
 
   numbers.next(3);
   numbers.next(4);
 
- assert.equal(__, sum);
+  assert.equal(__, sum);
 });
 
 test('events while subscribing', function () {
-  var received = [],
-      words = new Subject(),
-      observable = words.tap(received.push.bind(received));
+  const received = [];
+  const words = new Subject();
+  const observable = words.pipe(tap(received.push.bind(received)));
 
   words.next('Peter');
   words.next('said');
 
-  var subscription = observable.subscribe();
+  const subscription = observable.subscribe();
 
   words.next('you');
   words.next('look');
   words.next('pretty');
 
-  subscription.dispose();
+  subscription.unsubscribe();
 
   words.next('ugly');
 
- assert.equal(__, received.join(' '));
+  assert.equal(__, received.join(' '));
 });
