@@ -22,10 +22,10 @@ test('this is the same as an event stream', function () {
 
 // What is the relationship between "this is the same as an event stream" and "simple subscription"?
 test('how event streams relate to observables', function () {
-  const observableResult = 1;
+  let observableResult = 1;
   of(73).subscribe(function (x) { observableResult = x; });
 
-  const eventStreamResult = 1;
+  let eventStreamResult = 1;
   const events = new Subject();
   events.subscribe(function (x) { eventStreamResult = x; });
   events.__(73);
@@ -35,7 +35,7 @@ test('how event streams relate to observables', function () {
 
 // What does of() map to for a Subject?
 test('event streams have multiple results', function () {
-  const eventStreamResult = 0;
+  let eventStreamResult = 0;
   const events = new Subject();
   events.subscribe(function (x) { eventStreamResult += x; });
 
@@ -47,15 +47,15 @@ test('event streams have multiple results', function () {
 
 // What does of() map to for a Subject?
 test('simple return', function () {
-  var received = '';
+  let received = '';
   of('foo').subscribe(function (x) { received = x; });
 
   equal(__, received);
 });
 
 test('the last event', function () {
-  var received = '';
-  var names = ['foo', 'bar'];
+  let received = '';
+  const names = ['foo', 'bar'];
   Observable.from(names).subscribe(function (x) { received = x; });
 
   equal(__, received);
