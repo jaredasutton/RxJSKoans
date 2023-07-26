@@ -1,86 +1,92 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import {Observable} from 'rxjs';
+import {tap, from, range, reduce, filter, map, every} from 'rxjs';
 import {Range} from '../util/range.js';
 
 // QUnit.module('Composable Observations');
 
-var __ = 'Fill in the blank';
+const __ = 'Fill in the blank';
+const add = (x, y)=>(x + y);
 
 test('composable add', function () {
-  var received = 0,
-      numbers = [10, 100, __];
+  let received = 0;
+  const numbers = [10, 100, __];
+  const sum = from(numbers).pipe(reduce(add));
 
-  Observable.from(numbers).sum().subscribe(function (x) { received = x; });
+  sum.subscribe(function (x) { received = x; });
 
- assert.equal(1110, received);
+  assert.equal(1110, received);
 });
 
 test('composable before and after', function () {
-  var names = Range.create(1, 6),
-      a = '',
-      b = '';
+  const numbers = Range.create(1, 6);
+  let a = '';
+  let b = '';
 
-  Observable.from(names)
-    .tap(function (n) { a += n; })
-    .filter(function (n) { return n % 2 === 0; })
-    .tap(function (n) { b += n; })
-    .subscribe();
+  from(numbers).pipe(
+    tap((n)=>{ a += n; }),
+    filter((n)=>(n % 2 === 0)),
+    tap((n)=>{ b += n; })
+  )
+  .subscribe();
 
- assert.equal(__, a);
- assert.equal('246', b);
+  assert.equal(__, a);
+  assert.equal('246', b);
 });
 
 test('we wrote this', function () {
-  var received = [],
-      names = ["Bart", "Marge", "Wes", "Linus", "Erik", "Matt"];
+  const received = [];
+  const names = ["Bart", "Marge", "Wes", "Linus", "Erik", "Matt"];
 
-  Observable.from(names)
-    .filter(function (n) { return n.length <= __; })
-    .subscribe(received.push.bind(received));
+  from(names).pipe(
+    filter((x)=>(x.length <= __)),
+  ).subscribe((x)=>{ received.push(x); });
 
- assert.equal('Bart,Wes,Erik,Matt', received);
+  assert.equal('Bart,Wes,Erik,Matt', received.toString());
 });
 
 test('converting events', function () {
-  var received = '',
-      names = ["wE", "hOpE", "yOU", "aRe", "eNJoyIng", "tHiS"];
+  let received = '';
+  const names = ["wE", "hOpE", "yOU", "aRe", "eNJoyIng", "tHiS"];
 
-  Observable.from(names)
-    .map(function (x) { return x.__(); })
-    .subscribe(function (x) { received += x + ' '; });
+  from(names).pipe(
+    map((x)=>(x.__())),
+  ).subscribe((x)=>{ received += `${x} `; });
 
- assert.equal('we hope you are enjoying this ', received);
+  assert.equal('we hope you are enjoying this ', received);
 });
 
 test('create a more relevant stream', function () {
-  var received = '',
-      mouseXMovements = [100, 200, 150],
-      relativemouse = Observable.from(mouseXMovements).map(function (x) { return x - __; });
+  let received = '';
+  const mouseXMovements = [100, 200, 150];
+  const relativemouse = from(mouseXMovements).pipe(
+    map((x)=>(x - __))
+  );
 
-  relativemouse.subscribe(function (x) { received += x + ', '; });
+  relativemouse.subscribe(function (x) { received += `${x}, `; });
 
  assert.equal('50, 150, 100, ', received);
 });
 
 test('checking everything', function () {
-  var received = null,
-      names = [2,4,6,8];
+  let received = null;
+  const names = [2,4,6,8];
 
-  Observable.from(names)
-    .every(function (x) { return x % 2 === 0; })
-    .subscribe(function (x) { received = x; });
+  from(names).pipe(
+    every((x)=>(x % 2 === 0))
+  ).subscribe(function (x) { received = x; });
 
- assert.equal(__, received);
+  assert.equal(__, received);
 });
 
-test('composition means the sum is greater than the parts', function () {
-  var received = 0,
-      numbers = Observable.range(1, 10);
+test.only('composition means the sum is greater than the parts', function () {
+  let received = 0;
+  const numbers = range(1, 10);
 
-  numbers.filter(function (x) { return x > __; })
-    .sum()
-    .subscribe(function (x) { received = x; });
+  numbers.pipe(
+    filter((x)=>(x > __)),
+    reduce(add)
+  ).subscribe(function (x) { received = x; });
 
  assert.equal(19, received);
 });
