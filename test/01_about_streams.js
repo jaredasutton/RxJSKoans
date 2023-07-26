@@ -3,7 +3,7 @@ const Range = require('../util/range');
 
 QUnit.module('Observable Streams');
 
-var __ = 'Fill in the blank';
+const __ = 'Fill in the blank';
 
 test('simple subscription', function () {
   of(42).subscribe(function (x) { equal(x, __); });
@@ -15,18 +15,18 @@ test('what comes in goes out', function () {
 
 // Which interface Rx apply? (hint: what does "just()" return)
 test('this is the same as an event stream', function () {
-  var events = new Subject();
+  const events = new Subject();
   events.subscribe(function (x) { equal(__, x); });
   events.onNext(37);
 });
 
 // What is the relationship between "this is the same as an event stream" and "simple subscription"?
 test('how event streams relate to observables', function () {
-  var observableResult = 1;
+  const observableResult = 1;
   of(73).subscribe(function (x) { observableResult = x; });
 
-  var eventStreamResult = 1;
-  var events = new Subject();
+  const eventStreamResult = 1;
+  const events = new Subject();
   events.subscribe(function (x) { eventStreamResult = x; });
   events.__(73);
 
@@ -35,8 +35,8 @@ test('how event streams relate to observables', function () {
 
 // What does of() map to for a Subject?
 test('event streams have multiple results', function () {
-  var eventStreamResult = 0;
-  var events = new Subject();
+  const eventStreamResult = 0;
+  const events = new Subject();
   events.subscribe(function (x) { eventStreamResult += x; });
 
   events.onNext(10);
