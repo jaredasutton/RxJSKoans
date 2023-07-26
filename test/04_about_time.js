@@ -80,16 +80,16 @@ asyncTest('debouncing', function () {
   var events = new Subject();
   events.debounce(100).subscribe(received.push.bind(received));
 
-  events.onNext('f');
-  events.onNext('fr');
-  events.onNext('fro');
-  events.onNext('from');
+  events.next('f');
+  events.next('fr');
+  events.next('fro');
+  events.next('from');
 
   setTimeout(function () {
-    events.onNext('r');
-    events.onNext('rx');
-    events.onNext('rxj');
-    events.onNext('rxjs');
+    events.next('r');
+    events.next('rx');
+    events.next('rxj');
+    events.next('rxjs');
 
     setTimeout(function () {
       equal(__, received.join(' '));
@@ -105,17 +105,17 @@ asyncTest('buffering', function () {
     .map(function (c) { return c.join(''); })
     .subscribe(received.push.bind(received));
 
-  events.onNext('R');
-  events.onNext('x');
-  events.onNext('J');
-  events.onNext('S');
+  events.next('R');
+  events.next('x');
+  events.next('J');
+  events.next('S');
 
   setTimeout(function () {
-    events.onNext('R');
-    events.onNext('o');
-    events.onNext('c');
-    events.onNext('k');
-    events.onNext('s');
+    events.next('R');
+    events.next('o');
+    events.next('c');
+    events.next('k');
+    events.next('s');
 
     setTimeout(function () {
       equal(__, received.join(' '));
@@ -132,14 +132,14 @@ asyncTest('time between calls', function () {
     .filter(function (t) { return t.interval > 100; })
     .subscribe(function (t) { received.push(t.value); });
 
-  events.onNext('too');
-  events.onNext('fast');
+  events.next('too');
+  events.next('fast');
 
   setTimeout(function () {
-    events.onNext('slow');
+    events.next('slow');
 
     setTimeout(function () {
-      events.onNext('down');
+      events.next('down');
 
       equal(__, received.join(' '));
       start();

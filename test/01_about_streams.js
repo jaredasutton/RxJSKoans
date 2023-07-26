@@ -17,7 +17,7 @@ test('what comes in goes out', function () {
 test('this is the same as an event stream', function () {
   const events = new Subject();
   events.subscribe(function (x) { equal(__, x); });
-  events.onNext(37);
+  events.next(37);
 });
 
 // What is the relationship between "this is the same as an event stream" and "simple subscription"?
@@ -39,8 +39,8 @@ test('event streams have multiple results', function () {
   const events = new Subject();
   events.subscribe(function (x) { eventStreamResult += x; });
 
-  events.onNext(10);
-  events.onNext(7);
+  events.next(10);
+  events.next(7);
 
   equal(__, eventStreamResult);
 });
