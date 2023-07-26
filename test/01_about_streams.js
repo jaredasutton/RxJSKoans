@@ -7,18 +7,22 @@ import {Range} from '../util/range.js';
 
 const __ = 'Fill in the blank';
 
-test('simple subscription', function () {
-  of(42).subscribe(function (x) {assert.equal(x, __); });
+test('simple subscription', function (_,done) {
+  of(42).subscribe(function (x) {
+    done(assert.equal(x, __));
+  });
 });
 
-test('what comes in goes out', function () {
-  of(__).subscribe(function (x) {assert.equal(x, 101); });
+test('what comes in goes out', function (_,done) {
+  of(__).subscribe(function (x) {
+    done(assert.equal(x, 101));
+  });
 });
 
 // Which interface Rx apply? (hint: what does "just()" return)
-test('this is the same as an event stream', function () {
+test('this is the same as an event stream', function (_,done) {
   const events = new Subject();
-  events.subscribe(function (x) {assert.equal(__, x); });
+  events.subscribe(function (x) {done(assert.equal(__, x)); });
   events.next(37);
 });
 
