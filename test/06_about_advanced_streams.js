@@ -1,4 +1,4 @@
-var Rx = require('rx'),
+const Rx = require('rxjs'),
     Observable = Rx.Observable,
     Subject = Rx.Subject;
 
@@ -8,8 +8,8 @@ var __ = 'Fill in the blank';
 
 test('merging', function () {
   var easy = [];
-  var you = Observable.of(1,2,3);
-  var me = Observable.of('A','B','C');
+  var you = of(1,2,3);
+  var me = of('A','B','C');
   you.merge(me).subscribe(easy.push.bind(easy));
   equal(easy.join(' '), __);
 });
@@ -52,7 +52,7 @@ test('splitting up', function () {
 
 test('need to subscribe immediately when splitting', function () {
   var averages = [0,0];
-  var numbers = Observable.of(22,22,99,22,101,22);
+  var numbers = of(22,22,99,22,101,22);
   var split = numbers.groupBy(function (n) { return n % 2; });
 
   split.subscribe(function (g) {

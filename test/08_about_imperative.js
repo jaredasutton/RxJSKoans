@@ -1,4 +1,4 @@
-var Rx = require('rx'),
+const Rx = require('rxjs'),
     Observable = Rx.Observable;
 
 QUnit.module('Imperative');
@@ -11,7 +11,7 @@ test('can make a decision with an if with no else', function () {
     .flatMap(function (x) {
       return Rx.Observable.if(
         function () { return x % 2 === 0; },
-        Observable.just(x)
+        of(x)
       );
     })
     .subscribe(results.push.bind(results));
@@ -25,7 +25,7 @@ test('can make a decision with an if with an else', function () {
     .flatMap(function (x, i) {
       return Rx.Observable.if(
         function () { return x % 2 === 0; },
-        Observable.just(x),
+        of(x),
         Observable.range(x, i)
       );
     })
@@ -38,13 +38,13 @@ test('we can make test cases', function () {
   var result = '';
 
   var cases = {
-    'matt': Observable.just(1),
-    'erik': Observable.just(2),
-    'bart': Observable.just(3),
-    'wes': Observable.just(4)
+    'matt': of(1),
+    'erik': of(2),
+    'bart': of(3),
+    'wes': of(4)
   };
 
-  Observable.just(__)
+  of(__)
     .flatMap(function (x) {
       return Observable.case(
         function () { return x; },
@@ -60,18 +60,18 @@ test('we can also have a default case', function () {
   var result = '';
 
   var cases = {
-    'matt': Observable.just(1),
-    'erik': Observable.just(2),
-    'bart': Observable.just(3),
-    'wes': Observable.just(4)
+    'matt': of(1),
+    'erik': of(2),
+    'bart': of(3),
+    'wes': of(4)
   };
 
-  Observable.just('RxJS')
+  of('RxJS')
     .flatMap(function (x) {
       return Observable.case(
         function () { return x; },
         cases,
-        Observable.just(__)
+        of(__)
       );
     })
     .subscribe(function (x) { result = x; });
@@ -86,7 +86,7 @@ test('while does something until proven false', function () {
   var source = Rx.Observable
     .while(
       function () { return ++i < 3 },
-      Rx.Observable.just(__)
+      Rx.of(__)
     )
     .subscribe(result.push.bind(result));
 

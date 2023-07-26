@@ -1,4 +1,4 @@
-var Rx = require('rx'),
+const Rx = require('rxjs'),
     Observable = Rx.Observable,
     Subject = Rx.Subject,
     Scheduler = Rx.Scheduler;
@@ -39,10 +39,10 @@ asyncTest('a watched pot', function () {
   var received = '';
   var delay = 500;
   var timeout = __;
-  var timeoutEvent = Observable.just('Tepid');
+  var timeoutEvent = of('Tepid');
 
   Observable
-    .just('Boiling')
+    of('Boiling')
     .delay(delay)
     .timeout(timeout, timeoutEvent)
     .subscribe(function(x) { received = x; });
@@ -56,7 +56,7 @@ asyncTest('a watched pot', function () {
 asyncTest('you can place a time limit on how long an event should take', function () {
   var received = [];
   var timeout = 2000;
-  var timeoutEvent = Observable.just('Tepid');
+  var timeoutEvent = of('Tepid');
   var temperatures = new Subject();
 
   temperatures.timeout(timeout, timeoutEvent).subscribe(received.push.bind(received));

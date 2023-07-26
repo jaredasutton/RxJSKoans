@@ -55,7 +55,7 @@ You have come to the first error. You then open up the `about_streams.js` file i
 
 ```js
 test('simple subscription', function () {
-  Observable.just(42).subscribe(function (x) { equal(x, __); });
+  of(42).subscribe(function (x) { equal(x, __); });
 });
 ```
 

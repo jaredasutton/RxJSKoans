@@ -1,4 +1,4 @@
-var Rx = require('rx'),
+const Rx = require('rxjs'),
     Observable = Rx.Observable,
     EventEmitter = require('events').EventEmitter;
 
