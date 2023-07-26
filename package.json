@@ -25,7 +25,7 @@
   "dependencies": {
     "mocha": "*",
     "mocha-qunit-ui": "*",
-    "rx": "*"
+    "@reactivex/rxjs": "*"
   },
   "scripts": {
     "test": "mocha --ui mocha-qunit-ui -b"
