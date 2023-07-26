@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import {Observable, Subject, of} from 'rxjs';
+import {Subject, of, from} from 'rxjs';
 import {Range} from '../util/range.js';
 
 // QUnit.module('Observable Streams');
@@ -62,42 +62,42 @@ test('simple return', function () {
 test('the last event', function () {
   let received = '';
   const names = ['foo', 'bar'];
-  Observable.from(names).subscribe(function (x) { received = x; });
+  from(names).subscribe(function (x) { received = x; });
 
  assert.equal(__, received);
 });
 
 test('everything counts', function () {
-  var received = 0;
-  var numbers = [3, 4];
-  Observable.from(numbers).subscribe(function (x) { received += x; });
+  let received = 0;
+  const numbers = [3, 4];
+  from(numbers).subscribe(function (x) { received += x; });
 
  assert.equal(__, received);
 });
 
 test('this is still an event stream', function () {
-  var received = 0;
-  var numbers = new Subject();
+  let received = 0;
+  const numbers = new Subject();
   numbers.subscribe(function (x) { received += x; });
 
-  numbers.onNext(10);
-  numbers.onNext(5);
+  numbers.next(10);
+  numbers.next(5);
 
  assert.equal(__, received);
 });
 
 test('all events will be received', function () {
-  var received = 'Working ';
-  var numbers = Range.create(9, 5);
+  let received = 'Working ';
+  const numbers = Range.create(9, 5);
 
-  Observable.from(numbers).subscribe(function (x) { received += x; });
+  from(numbers).subscribe(function (x) { received += x; });
 
  assert.equal(__, received);
 });
 
 test('do things in the middle', function () {
   var status = [];
-  var daysTilTest = Observable.from(Range.create(4, 1));
+  var daysTilTest = from(Range.create(4, 1));
 
   daysTilTest.tap(function (d) { status.push(d + '=' + (d === 1 ? 'Study Like Mad' : __)); }).subscribe();
 
@@ -106,7 +106,7 @@ test('do things in the middle', function () {
 
 test('nothing listens until you subscribe', function () {
   var sum = 0,
-      numbers = Observable.from(Range.create(1, 10)),
+      numbers = from(Range.create(1, 10)),
       observable = numbers.tap(function (n) { sum += n; });
 
  assert.equal(0, sum);
@@ -120,13 +120,13 @@ test('events before you subscribe do not count', function () {
       numbers = new Subject(),
       observable = numbers.tap(function (n) { sum += n; });
 
-  numbers.onNext(1);
-  numbers.onNext(2);
+  numbers.next(1);
+  numbers.next(2);
 
   observable.subscribe();
 
-  numbers.onNext(3);
-  numbers.onNext(4);
+  numbers.next(3);
+  numbers.next(4);
 
  assert.equal(__, sum);
 });
@@ -137,13 +137,13 @@ test('events after you unsubscribe dont count', function () {
       observable = numbers.tap(function (n) { sum += n; }),
       subscription = observable.subscribe();
 
-  numbers.onNext(1);
-  numbers.onNext(2);
+  numbers.next(1);
+  numbers.next(2);
 
   subscription.dispose();
 
-  numbers.onNext(3);
-  numbers.onNext(4);
+  numbers.next(3);
+  numbers.next(4);
 
  assert.equal(__, sum);
 });
@@ -153,18 +153,18 @@ test('events while subscribing', function () {
       words = new Subject(),
       observable = words.tap(received.push.bind(received));
 
-  words.onNext('Peter');
-  words.onNext('said');
+  words.next('Peter');
+  words.next('said');
 
   var subscription = observable.subscribe();
 
-  words.onNext('you');
-  words.onNext('look');
-  words.onNext('pretty');
+  words.next('you');
+  words.next('look');
+  words.next('pretty');
 
   subscription.dispose();
 
-  words.onNext('ugly');
+  words.next('ugly');
 
  assert.equal(__, received.join(' '));
 });

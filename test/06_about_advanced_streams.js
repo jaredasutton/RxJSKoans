@@ -24,12 +24,12 @@ test('merging events', function () {
   s1.subscribe(first.push.bind(first));
   s1.merge(s2).subscribe(both.push.bind(both));
 
-  s1.onNext('I');
-  s1.onNext('am');
-  s2.onNext('nobody.');
-  s2.onNext('Nobody');
-  s2.onNext('is');
-  s1.onNext('perfect.');
+  s1.next('I');
+  s1.next('am');
+  s2.next('nobody.');
+  s2.next('Nobody');
+  s2.next('is');
+  s1.next('perfect.');
 
  assert.equal('I am nobody. Nobody is perfect.', both.join(' '));
  assert.equal(__, first.join(' '));
@@ -69,18 +69,18 @@ test('multiple subscriptions', function () {
   var average = 0;
 
   numbers.sum().subscribe(function (n) { sum = n; });
-  numbers.onNext(1);
-  numbers.onNext(1);
-  numbers.onNext(1);
-  numbers.onNext(1);
-  numbers.onNext(1);
+  numbers.next(1);
+  numbers.next(1);
+  numbers.next(1);
+  numbers.next(1);
+  numbers.next(1);
 
   numbers.average().subscribe(function (n) { average = n; });
-  numbers.onNext(2);
-  numbers.onNext(2);
-  numbers.onNext(2);
-  numbers.onNext(2);
-  numbers.onNext(2);
+  numbers.next(2);
+  numbers.next(2);
+  numbers.next(2);
+  numbers.next(2);
+  numbers.next(2);
 
   numbers.onCompleted();
 

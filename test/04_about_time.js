@@ -26,7 +26,7 @@ test('launching an event in the future', function () {
 
   var people = new Subject();
   people.delay(time).subscribe(function (x) { received = x; });
-  people.onNext('Godot');
+  people.next('Godot');
 
   setTimeout(function () {
    assert.equal('Godot', received);
@@ -60,10 +60,10 @@ test('you can place a time limit on how long an event should take', function () 
 
   temperatures.timeout(timeout, timeoutEvent).subscribe(received.push.bind(received));
 
-  temperatures.onNext('Started');
+  temperatures.next('Started');
 
   setTimeout(function () {
-    temperatures.onNext('Boiling');
+    temperatures.next('Boiling');
   }, 3000);
 
   setTimeout(function () {
