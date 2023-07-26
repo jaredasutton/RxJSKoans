@@ -1,13 +1,12 @@
-const Rx = require('rxjs'),
-    Observable = Rx.Observable,
-    Subject = Rx.Subject,
-    Scheduler = Rx.Scheduler;
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable, Subject, of, Scheduler} from 'rxjs';
 
-QUnit.module('Time');
+// QUnit.module('Time');
 
 var __ = 'Fill in the blank';
 
-asyncTest('launching an event via a scheduler', function () {
+test('launching an event via a scheduler', function () {
   var state = null;
   var received = '';
   var delay = 600; // Fix this value
@@ -17,11 +16,11 @@ asyncTest('launching an event via a scheduler', function () {
 
   setTimeout(function () {
     start();
-    equal('Finished', received);
+   assert.equal('Finished', received);
   }, 500);
 });
 
-asyncTest('launching an event in the future', function () {
+test('launching an event in the future', function () {
   var received = null;
   var time = __;
 
@@ -30,12 +29,12 @@ asyncTest('launching an event in the future', function () {
   people.onNext('Godot');
 
   setTimeout(function () {
-    equal('Godot', received);
+   assert.equal('Godot', received);
     start();
   }, 500)
 });
 
-asyncTest('a watched pot', function () {
+test('a watched pot', function () {
   var received = '';
   var delay = 500;
   var timeout = __;
@@ -48,12 +47,12 @@ asyncTest('a watched pot', function () {
     .subscribe(function(x) { received = x; });
 
   setTimeout(function() {
-    equal(received, 'Boiling');
+   assert.equal(received, 'Boiling');
     start();
   }, 500);
 });
 
-asyncTest('you can place a time limit on how long an event should take', function () {
+test('you can place a time limit on how long an event should take', function () {
   var received = [];
   var timeout = 2000;
   var timeoutEvent = of('Tepid');
@@ -68,12 +67,12 @@ asyncTest('you can place a time limit on how long an event should take', functio
   }, 3000);
 
   setTimeout(function () {
-    equal(__, received.join(', '));
+   assert.equal(__, received.join(', '));
     start();
   }, 4000);
 });
 
-asyncTest('debouncing', function () {
+test('debouncing', function () {
   expect(1);
 
   var received = [];
@@ -92,13 +91,13 @@ asyncTest('debouncing', function () {
     events.next('rxjs');
 
     setTimeout(function () {
-      equal(__, received.join(' '));
+     assert.equal(__, received.join(' '));
       start();
     }, 120);
   }, 120);
 });
 
-asyncTest('buffering', function () {
+test('buffering', function () {
   var received = [];
   var events = new Subject();
   events.bufferWithTime(100)
@@ -118,13 +117,13 @@ asyncTest('buffering', function () {
     events.next('s');
 
     setTimeout(function () {
-      equal(__, received.join(' '));
+     assert.equal(__, received.join(' '));
       start();
     }, 120);
   }, 120);
 });
 
-asyncTest('time between calls', function () {
+test('time between calls', function () {
   var received = [];
   var events = new Subject();
 
@@ -141,13 +140,13 @@ asyncTest('time between calls', function () {
     setTimeout(function () {
       events.next('down');
 
-      equal(__, received.join(' '));
+     assert.equal(__, received.join(' '));
       start();
     }, 120);
   }, 120);
 });
 
-asyncTest('results can be ambiguous timing', function () {
+test('results can be ambiguous timing', function () {
   var results = 0;
   var fst = Observable.timer(400).map(-1);
   var snd = Observable.timer(500).map(1);
@@ -155,7 +154,7 @@ asyncTest('results can be ambiguous timing', function () {
   fst.amb(snd).subscribe(function (x) { results = x; });
 
   setTimeout(function () {
-    equal(results, __);
+   assert.equal(results, __);
     start();
   }, 600);
 });

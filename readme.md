@@ -55,7 +55,7 @@ You have come to the first error. You then open up the `about_streams.js` file i
 
 ```js
 test('simple subscription', function () {
-  of(42).subscribe(function (x) { equal(x, __); });
+  of(42).subscribe(function (x) {assert.equal(x, __); });
 });
 ```
 

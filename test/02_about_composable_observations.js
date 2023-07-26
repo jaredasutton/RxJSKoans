@@ -1,9 +1,9 @@
-const Rx = require('rxjs'),
-    Observable = Rx.Observable,
-    Subject = Rx.Subject,
-    Range = require('../util/range');
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable} from 'rxjs';
+import {Range} from '../util/range.js';
 
-QUnit.module('Composable Observations');
+// QUnit.module('Composable Observations');
 
 var __ = 'Fill in the blank';
 
@@ -13,7 +13,7 @@ test('composable add', function () {
 
   Observable.from(numbers).sum().subscribe(function (x) { received = x; });
 
-  equal(1110, received);
+ assert.equal(1110, received);
 });
 
 test('composable before and after', function () {
@@ -27,8 +27,8 @@ test('composable before and after', function () {
     .tap(function (n) { b += n; })
     .subscribe();
 
-  equal(__, a);
-  equal('246', b);
+ assert.equal(__, a);
+ assert.equal('246', b);
 });
 
 test('we wrote this', function () {
@@ -39,7 +39,7 @@ test('we wrote this', function () {
     .filter(function (n) { return n.length <= __; })
     .subscribe(received.push.bind(received));
 
-  equal('Bart,Wes,Erik,Matt', received);
+ assert.equal('Bart,Wes,Erik,Matt', received);
 });
 
 test('converting events', function () {
@@ -50,7 +50,7 @@ test('converting events', function () {
     .map(function (x) { return x.__(); })
     .subscribe(function (x) { received += x + ' '; });
 
-  equal('we hope you are enjoying this ', received);
+ assert.equal('we hope you are enjoying this ', received);
 });
 
 test('create a more relevant stream', function () {
@@ -60,7 +60,7 @@ test('create a more relevant stream', function () {
 
   relativemouse.subscribe(function (x) { received += x + ', '; });
 
-  equal('50, 150, 100, ', received);
+ assert.equal('50, 150, 100, ', received);
 });
 
 test('checking everything', function () {
@@ -71,7 +71,7 @@ test('checking everything', function () {
     .every(function (x) { return x % 2 === 0; })
     .subscribe(function (x) { received = x; });
 
-  equal(__, received);
+ assert.equal(__, received);
 });
 
 test('composition means the sum is greater than the parts', function () {
@@ -82,5 +82,5 @@ test('composition means the sum is greater than the parts', function () {
     .sum()
     .subscribe(function (x) { received = x; });
 
-  equal(19, received);
+ assert.equal(19, received);
 });

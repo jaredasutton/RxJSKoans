@@ -1,8 +1,8 @@
-const Rx = require('rxjs'),
-    Observable = Rx.Observable,
-    Subject = Rx.Subject;
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable, Subject, of} from 'rxjs';
 
-QUnit.module('Advanced Streams');
+// QUnit.module('Advanced Streams');
 
 var __ = 'Fill in the blank';
 
@@ -11,7 +11,7 @@ test('merging', function () {
   var you = of(1,2,3);
   var me = of('A','B','C');
   you.merge(me).subscribe(easy.push.bind(easy));
-  equal(easy.join(' '), __);
+ assert.equal(easy.join(' '), __);
 });
 
 test('merging events', function () {
@@ -31,8 +31,8 @@ test('merging events', function () {
   s2.onNext('is');
   s1.onNext('perfect.');
 
-  equal('I am nobody. Nobody is perfect.', both.join(' '));
-  equal(__, first.join(' '));
+ assert.equal('I am nobody. Nobody is perfect.', both.join(' '));
+ assert.equal(__, first.join(' '));
 });
 
 test('splitting up', function () {
@@ -46,8 +46,8 @@ test('splitting up', function () {
     })
   });
 
-  equal('2468', oddsAndEvens[0]);
-  equal('13579', oddsAndEvens[1]);
+ assert.equal('2468', oddsAndEvens[0]);
+ assert.equal('13579', oddsAndEvens[1]);
 });
 
 test('need to subscribe immediately when splitting', function () {
@@ -59,8 +59,8 @@ test('need to subscribe immediately when splitting', function () {
     g.average().__(function (a) { averages[g.key] = a; });
   });
 
-  equal(22, averages[0]);
-  equal(100, averages[1]);
+ assert.equal(22, averages[0]);
+ assert.equal(100, averages[1]);
 });
 
 test('multiple subscriptions', function () {
@@ -84,6 +84,6 @@ test('multiple subscriptions', function () {
 
   numbers.onCompleted();
 
-  equal(15, sum);
-  equal(__, average);
+ assert.equal(15, sum);
+ assert.equal(__, average);
 });

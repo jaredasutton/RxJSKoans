@@ -1,7 +1,8 @@
-const Rx = require('rxjs'),
-    Observable = Rx.Observable;
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable} from 'rxjs';
 
-QUnit.module('Mapping');
+// QUnit.module('Mapping');
 
 var __ = 'Fill in the blank';
 
@@ -13,7 +14,7 @@ test('flatMap can be a cartesian product', function () {
     })
     .subscribe(results.push.bind(results));
 
-  equal('234', results.join(''));
+ assert.equal('234', results.join(''));
 });
 
 test('flatMapLatest only gets us the latest value', function () {
@@ -24,5 +25,5 @@ test('flatMapLatest only gets us the latest value', function () {
     })
     .subscribe(results.push.bind(results));
 
-  equal('12345', results.join(''));
+ assert.equal('12345', results.join(''));
 });

@@ -1,8 +1,9 @@
-const Rx = require('rxjs'),
-    Observable = Rx.Observable,
-    EventEmitter = require('events').EventEmitter;
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable} from 'rxjs';
+import {EventEmitter} from 'events';
 
-QUnit.module('Events');
+// QUnit.module('Events');
 
 var __ = 'Fill in the blank';
 
@@ -21,5 +22,5 @@ test('the main event', function () {
 
   e.emit('change', '!');
 
-  equal(__, received.join(''));
+ assert.equal(__, received.join(''));
 });

@@ -1,8 +1,9 @@
-const Rx = require('rxjs'),
-    Observable = Rx.Observable,
-    EventEmitter = require('events').EventEmitter;
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable} from 'rxjs';
+import {EventEmitter} from 'events';
 
-QUnit.module('Querying');
+// QUnit.module('Querying');
 
 var __ = 'Fill in the blank';
 
@@ -16,7 +17,7 @@ test('Basic querying', function () {
     .toArray()
     .subscribe(strings.push.bind(strings));
 
-  equal('11,22,33,44,55,66,77,88,99', strings.toString());
+ assert.equal('11,22,33,44,55,66,77,88,99', strings.toString());
 });
 
 test('querying over events', function () {
@@ -32,7 +33,7 @@ test('querying over events', function () {
   e.emit('click', {x: 75,  y: 75});
   e.emit('click', {x: 40,  y: 80});
 
-  equal(results, 150);
+ assert.equal(results, 150);
 });
 
 test('buffering with count and skip', function () {
@@ -41,6 +42,6 @@ test('buffering with count and skip', function () {
     .bufferWithCount(__, __)
     .subscribe(results.push.bind(results));
 
-  equal('12345',  results[0].join(''));
-  equal('678910', results[1].join(''));
+ assert.equal('12345',  results[0].join(''));
+ assert.equal('678910', results[1].join(''));
 });

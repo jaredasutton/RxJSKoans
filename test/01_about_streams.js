@@ -1,22 +1,24 @@
-const {Observable, Subject, of} = require('rxjs');
-const Range = require('../util/range');
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable, Subject, of} from 'rxjs';
+import {Range} from '../util/range.js';
 
-QUnit.module('Observable Streams');
+// QUnit.module('Observable Streams');
 
 const __ = 'Fill in the blank';
 
 test('simple subscription', function () {
-  of(42).subscribe(function (x) { equal(x, __); });
+  of(42).subscribe(function (x) {assert.equal(x, __); });
 });
 
 test('what comes in goes out', function () {
-  of(__).subscribe(function (x) { equal(x, 101); });
+  of(__).subscribe(function (x) {assert.equal(x, 101); });
 });
 
 // Which interface Rx apply? (hint: what does "just()" return)
 test('this is the same as an event stream', function () {
   const events = new Subject();
-  events.subscribe(function (x) { equal(__, x); });
+  events.subscribe(function (x) {assert.equal(__, x); });
   events.next(37);
 });
 
@@ -30,7 +32,7 @@ test('how event streams relate to observables', function () {
   events.subscribe(function (x) { eventStreamResult = x; });
   events.__(73);
 
-  equal(observableResult, eventStreamResult);
+  assert.equal(observableResult, eventStreamResult);
 });
 
 // What does of() map to for a Subject?
@@ -42,7 +44,7 @@ test('event streams have multiple results', function () {
   events.next(10);
   events.next(7);
 
-  equal(__, eventStreamResult);
+ assert.equal(__, eventStreamResult);
 });
 
 // What does of() map to for a Subject?
@@ -50,7 +52,7 @@ test('simple return', function () {
   let received = '';
   of('foo').subscribe(function (x) { received = x; });
 
-  equal(__, received);
+ assert.equal(__, received);
 });
 
 test('the last event', function () {
@@ -58,7 +60,7 @@ test('the last event', function () {
   const names = ['foo', 'bar'];
   Observable.from(names).subscribe(function (x) { received = x; });
 
-  equal(__, received);
+ assert.equal(__, received);
 });
 
 test('everything counts', function () {
@@ -66,7 +68,7 @@ test('everything counts', function () {
   var numbers = [3, 4];
   Observable.from(numbers).subscribe(function (x) { received += x; });
 
-  equal(__, received);
+ assert.equal(__, received);
 });
 
 test('this is still an event stream', function () {
@@ -77,7 +79,7 @@ test('this is still an event stream', function () {
   numbers.onNext(10);
   numbers.onNext(5);
 
-  equal(__, received);
+ assert.equal(__, received);
 });
 
 test('all events will be received', function () {
@@ -86,7 +88,7 @@ test('all events will be received', function () {
 
   Observable.from(numbers).subscribe(function (x) { received += x; });
 
-  equal(__, received);
+ assert.equal(__, received);
 });
 
 test('do things in the middle', function () {
@@ -95,7 +97,7 @@ test('do things in the middle', function () {
 
   daysTilTest.tap(function (d) { status.push(d + '=' + (d === 1 ? 'Study Like Mad' : __)); }).subscribe();
 
-  equal('4=Party,3=Party,2=Party,1=Study Like Mad', status.toString());
+ assert.equal('4=Party,3=Party,2=Party,1=Study Like Mad', status.toString());
 });
 
 test('nothing listens until you subscribe', function () {
@@ -103,10 +105,10 @@ test('nothing listens until you subscribe', function () {
       numbers = Observable.from(Range.create(1, 10)),
       observable = numbers.tap(function (n) { sum += n; });
 
-  equal(0, sum);
+ assert.equal(0, sum);
   observable.__();
 
-  equal(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10, sum);
+ assert.equal(1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10, sum);
 });
 
 test('events before you subscribe do not count', function () {
@@ -122,7 +124,7 @@ test('events before you subscribe do not count', function () {
   numbers.onNext(3);
   numbers.onNext(4);
 
-  equal(__, sum);
+ assert.equal(__, sum);
 });
 
 test('events after you unsubscribe dont count', function () {
@@ -139,7 +141,7 @@ test('events after you unsubscribe dont count', function () {
   numbers.onNext(3);
   numbers.onNext(4);
 
-  equal(__, sum);
+ assert.equal(__, sum);
 });
 
 test('events while subscribing', function () {
@@ -160,5 +162,5 @@ test('events while subscribing', function () {
 
   words.onNext('ugly');
 
-  equal(__, received.join(' '));
+ assert.equal(__, received.join(' '));
 });

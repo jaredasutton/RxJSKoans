@@ -1,7 +1,8 @@
-const Rx = require('rxjs'),
-    Observable = Rx.Observable;
+import test from 'node:test';
+import assert from 'node:assert';
+import {Observable, of} from 'rxjs';
 
-QUnit.module('Imperative');
+// QUnit.module('Imperative');
 
 var __ = 'Fill in the blank';
 
@@ -16,7 +17,7 @@ test('can make a decision with an if with no else', function () {
     })
     .subscribe(results.push.bind(results));
 
-  equal(__, results.join(''));
+ assert.equal(__, results.join(''));
 });
 
 test('can make a decision with an if with an else', function () {
@@ -31,7 +32,7 @@ test('can make a decision with an if with an else', function () {
     })
     .subscribe(results.push.bind(results));
 
-  equal(__, results.join(''));
+ assert.equal(__, results.join(''));
 });
 
 test('we can make test cases', function () {
@@ -53,7 +54,7 @@ test('we can make test cases', function () {
     })
     .subscribe(function (x) { result = x; });
 
-  equal(4, result);
+ assert.equal(4, result);
 });
 
 test('we can also have a default case', function () {
@@ -76,7 +77,7 @@ test('we can also have a default case', function () {
     })
     .subscribe(function (x) { result = x; });
 
-  equal(5, result);
+ assert.equal(5, result);
 });
 
 test('while does something until proven false', function () {
@@ -90,5 +91,5 @@ test('while does something until proven false', function () {
     )
     .subscribe(result.push.bind(result));
 
-  equal('4242', result.join(''));
+ assert.equal('4242', result.join(''));
 });
