@@ -1,56 +1,57 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import {Observable, Subject, of, Scheduler} from 'rxjs';
+import {Observable, Subject, of, asyncScheduler, delay, timeout} from 'rxjs';
 
 // QUnit.module('Time');
 
-var __ = 'Fill in the blank';
+const __ = 'Fill in the blank';
 
-test('launching an event via a scheduler', function () {
-  var state = null;
-  var received = '';
-  var delay = 600; // Fix this value
-  Scheduler.default.scheduleFuture(state, delay, function (scheduler, state) {
+test('launching an event via a scheduler', function (_,done) {
+  const state = null;
+  let received = '';
+  const delay = 600; // Fix this value
+  asyncScheduler.schedule(function (scheduler, state) {
     received = 'Finished';
-  });
+  }, delay, state);
 
   setTimeout(function () {
-    start();
-   assert.equal('Finished', received);
+   done(assert.equal('Finished', received));
   }, 500);
 });
 
-test('launching an event in the future', function () {
-  var received = null;
-  var time = __;
+test('launching an event in the future', function (_,done) {
+  let received = null;
+  const __ = 1000000000; 
+  const time = __; // Fill in the blank
 
-  var people = new Subject();
-  people.delay(time).subscribe(function (x) { received = x; });
+  const people = new Subject();
+  people.pipe(
+    delay(time)
+  ).subscribe((x) => { received = x; });
   people.next('Godot');
 
   setTimeout(function () {
-   assert.equal('Godot', received);
-    start();
+   done(assert.equal('Godot', received));
   }, 500)
 });
 
-test('a watched pot', function () {
-  var received = '';
-  var delay = 500;
-  var timeout = __;
-  var timeoutEvent = of('Tepid');
+test('a watched pot', function (_,done) {
+  let received = '';
+  const delayDuration = 500;
+  const timeoutDuration = __;
+  const timeoutEvent = of('Tepid');
 
-  Observable
-    of('Boiling')
-    .delay(delay)
-    .timeout(timeout, timeoutEvent)
-    .subscribe(function(x) { received = x; });
+  of('Boiling').pipe(
+    delay(delayDuration),
+    timeout({first: timeoutDuration, with: ()=>timeoutEvent})
+  ).subscribe((x)=>{ received = x; });
 
   setTimeout(function() {
-   assert.equal(received, 'Boiling');
-    start();
+   done(assert.equal(received, 'Boiling'));
   }, 500);
 });
+
+//TODO below tests are not working
 
 test('you can place a time limit on how long an event should take', function () {
   var received = [];
