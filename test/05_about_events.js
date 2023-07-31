@@ -1,24 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import {Observable} from 'rxjs';
+import {fromEvent} from 'rxjs';
 import {EventEmitter} from 'events';
 
 // QUnit.module('Events');
 
-var __ = 'Fill in the blank';
+const __ = 'Fill in the blank';
 
 test('the main event', function () {
-  var received = [];
-  var e = new EventEmitter();
-  var subscription = Observable.fromEvent(e, 'change')
-    .subscribe(received.push.bind(received));
+  const received = [];
+  const e = new EventEmitter();
+  const subscription = fromEvent(e, 'change')
+    .subscribe((x)=>received.push(x));
 
   e.emit('change', 'R');
   e.emit('change', 'x');
   e.emit('change', 'J');
   e.emit('change', 'S');
 
-  subscription.dispose();
+  subscription.unsubscribe();
 
   e.emit('change', '!');
 
