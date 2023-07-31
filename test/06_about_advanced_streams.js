@@ -72,7 +72,7 @@ test('need to subscribe immediately when splitting', function () {
  assert.equal(100, averages[1]);
 });
 
-test.only('multiple subscriptions', function () {
+test('multiple subscriptions', function () {
   const numbers = new Subject();
   let sum = 0;
   let average = 0;
