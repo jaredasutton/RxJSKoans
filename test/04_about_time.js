@@ -1,6 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert';
-import {Observable, Subject, of, asyncScheduler, delay, timeout} from 'rxjs';
+import {
+  Observable,
+  Subject,
+  of,
+  asyncScheduler,
+  delay,
+  timeout,
+  debounceTime,
+  bufferTime,
+  map,
+  timeInterval,
+  filter,
+  timer,
+  race
+} from "rxjs";
 
 // QUnit.module('Time');
 
@@ -14,7 +28,7 @@ test('launching an event via a scheduler', function (_,done) {
     received = 'Finished';
   }, delay, state);
 
-  setTimeout(function () {
+  setTimeout(()=>{
    done(assert.equal('Finished', received));
   }, 500);
 });
@@ -30,7 +44,7 @@ test('launching an event in the future', function (_,done) {
   ).subscribe((x) => { received = x; });
   people.next('Godot');
 
-  setTimeout(function () {
+  setTimeout(()=>{
    done(assert.equal('Godot', received));
   }, 500)
 });
@@ -46,116 +60,113 @@ test('a watched pot', function (_,done) {
     timeout({first: timeoutDuration, with: ()=>timeoutEvent})
   ).subscribe((x)=>{ received = x; });
 
-  setTimeout(function() {
+  setTimeout(()=>{
    done(assert.equal(received, 'Boiling'));
   }, 500);
 });
 
-//TODO below tests are not working
+test('you can place a time limit on how long an event should take', function (_,done) {
+  const received = [];
+  const timeoutDuration = 2000;
+  const timeoutEvent = of('Tepid');
+  const temperatures = new Subject();
 
-test('you can place a time limit on how long an event should take', function () {
-  var received = [];
-  var timeout = 2000;
-  var timeoutEvent = of('Tepid');
-  var temperatures = new Subject();
-
-  temperatures.timeout(timeout, timeoutEvent).subscribe(received.push.bind(received));
+  temperatures.pipe(
+    timeout({each: timeoutDuration, with: ()=>timeoutEvent})
+  ).subscribe((x)=>received.push(x));
 
   temperatures.next('Started');
 
-  setTimeout(function () {
+  setTimeout(()=>{
     temperatures.next('Boiling');
   }, 3000);
 
-  setTimeout(function () {
-   assert.equal(__, received.join(', '));
-    start();
+  setTimeout(()=>{
+   done(assert.equal(__, received.join(', ')))
   }, 4000);
 });
 
-test('debouncing', function () {
-  expect(1);
-
-  var received = [];
-  var events = new Subject();
-  events.debounce(100).subscribe(received.push.bind(received));
+test('debouncing', function (_,done) {
+  const received = [];
+  const events = new Subject();
+  events.pipe(
+    debounceTime(100)
+  ).subscribe((x)=>received.push(x));
 
   events.next('f');
   events.next('fr');
   events.next('fro');
   events.next('from');
 
-  setTimeout(function () {
+  setTimeout(()=>{
     events.next('r');
     events.next('rx');
     events.next('rxj');
     events.next('rxjs');
 
-    setTimeout(function () {
-     assert.equal(__, received.join(' '));
-      start();
+    setTimeout(()=>{
+     done(assert.equal(__, received.join(' ')));
     }, 120);
   }, 120);
 });
 
-test('buffering', function () {
-  var received = [];
-  var events = new Subject();
-  events.bufferWithTime(100)
-    .map(function (c) { return c.join(''); })
-    .subscribe(received.push.bind(received));
+test('buffering', function (_,done) {
+  const received = [];
+  const events = new Subject();
+  events.pipe(
+    bufferTime(100),
+    map((c)=>c.join(''))
+  ).subscribe((x)=>{ received.push(x); });
 
   events.next('R');
   events.next('x');
   events.next('J');
   events.next('S');
 
-  setTimeout(function () {
+  setTimeout(()=>{
     events.next('R');
     events.next('o');
     events.next('c');
     events.next('k');
     events.next('s');
 
-    setTimeout(function () {
-     assert.equal(__, received.join(' '));
-      start();
+    setTimeout(()=>{
+     done(assert.equal(__, received.join(' ')));
     }, 120);
   }, 120);
 });
 
-test('time between calls', function () {
-  var received = [];
-  var events = new Subject();
+test('time between calls', function (_,done) {
+  const received = [];
+  const events = new Subject();
 
-  events.timeInterval()
-    .filter(function (t) { return t.interval > 100; })
-    .subscribe(function (t) { received.push(t.value); });
+  events.pipe(
+    timeInterval(),
+    filter((t)=>(t.interval > 100))
+  ).subscribe(({value})=>{ received.push(value); });
 
   events.next('too');
   events.next('fast');
 
-  setTimeout(function () {
+  setTimeout(()=>{
     events.next('slow');
 
-    setTimeout(function () {
+    setTimeout(()=>{
       events.next('down');
 
-     assert.equal(__, received.join(' '));
-      start();
+     done(assert.equal(__, received.join(' ')));
     }, 120);
   }, 120);
 });
 
-test('results can be ambiguous timing', function () {
-  var results = 0;
-  var fst = Observable.timer(400).map(-1);
-  var snd = Observable.timer(500).map(1);
+test.only('results can be ambiguous timing', function (_,done) {
+  let results = 0;
+  const fst = timer(400).pipe(map(()=>-1));
+  const snd = timer(500).pipe(map(()=>1));
 
-  fst.amb(snd).subscribe(function (x) { results = x; });
+  race(fst, snd).subscribe(function (x) { results = x; });
 
-  setTimeout(function () {
-   assert.equal(results, __);
-    start();
+  setTimeout(()=>{
+   done(assert.equal(results, __));
   }, 600);
 });
